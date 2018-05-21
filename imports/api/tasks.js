@@ -10,7 +10,12 @@ export const Tasks = new Mongo.Collection('tasks');
 if(Meteor.isServer){
     //esto se ejecuta en el server unicamente
     Meteor.publish('tasks', function tasksPublication(){
-        return Tasks.find();
+        return Tasks.find({
+            $or: [
+                { private: { $ne: true} },
+                { owner: this.userId},
+            ],
+        });
     });
 }
 Meteor.methods({
